@@ -5,41 +5,19 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(
+        Icon(
           Icons.error_outline,
-          color: Colors.red,
-          size: 48,
+          color: Colors.white,
+          size: 40,
         ),
-        const SizedBox(height: 8),
-        const Text(
-          "¡Ups! Ocurrió un error",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.red,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          "Intenta nuevamente más tarde.",
-          style: TextStyle(fontSize: 16, color: Colors.black54),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-          ),
-          onPressed: () {
-            // Aquí puedes poner la lógica de reintento
-            Navigator.of(context).pop(); 
-          },
-          child: const Text("Reintentar"),
-        ),
+        SizedBox(height: 10),
+        Text(
+          'Error al cargar',
+          style: TextStyle(color: Colors.white),
+        )
       ],
     );
   }
