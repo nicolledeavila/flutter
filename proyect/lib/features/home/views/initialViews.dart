@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:proyect/features/home/views/loadingViews.dart';
+import 'package:proyect/features/home/services/api_service.dart';
 
 void main() {
   runApp(const Initialviews());
@@ -28,7 +27,10 @@ class _InitialviewsState extends State<Initialviews> {
   @override
   void initState() {
     super.initState();
+    _cargarDatosIniciales();
+  }
 
+  void _cargarDatosIniciales() {
     // Iniciar en estado de carga
     setState(() {
       estadoHeader = Estado.cargando;
@@ -37,67 +39,40 @@ class _InitialviewsState extends State<Initialviews> {
     });
 
     // Llamar a las funciones para obtener datos de las APIs
-    fetchUserData();
-    fetchTasksData();
+    _fetchUserData();
+    _fetchTasksData();
   }
 
-  // Función para obtener datos de la primera API (usuario)
-  Future<void> fetchUserData() async {
+  // Función para obtener datos de la primera API (usuario) usando ApiService
+  Future<void> _fetchUserData() async {
     try {
-      final response = await http.get(Uri.parse(
-          'https://raw.githubusercontent.com/JesusSoto7/Sotomayor/refs/heads/main/db.json'));
-          
-      if (response.statusCode == 200) {
-        // Parsear la respuesta JSON
-        final data = json.decode(response.body);
-        setState(() {
-          userData = data;
-          estadoHeader = Estado.exito;
-        });
-      } else {
-        // Manejar error de respuesta
-        setState(() {
-          estadoHeader = Estado.error;
-          errorMessage = 'Error al cargar datos de usuario: ${response.statusCode}';
-        });
-      }
+      final data = await ApiService.fetchUserData();
+      setState(() {
+        userData = data;
+        estadoHeader = Estado.exito;
+      });
     } catch (e) {
-      // Manejar error de conexión
       setState(() {
         estadoHeader = Estado.error;
-        errorMessage = 'Error de conexión: $e';
+        errorMessage = e.toString();
       });
     }
   }
 
-  // Función para obtener datos de la segunda API (tareas)
-  Future<void> fetchTasksData() async {
+  // Función para obtener datos de la segunda API (tareas) usando ApiService
+  Future<void> _fetchTasksData() async {
     try {
-      final response = await http.get(Uri.parse(
-          'https://raw.githubusercontent.com/JesusSoto7/Sotomayor/refs/heads/main/db2.json'));
-          
-      if (response.statusCode == 200) {
-        // Parsear la respuesta JSON
-        final data = json.decode(response.body);
-        setState(() {
-          tasksData = data;
-          estadoCard1 = Estado.exito;
-          estadoCard2 = Estado.exito;
-        });
-      } else {
-        // Manejar error de respuesta
-        setState(() {
-          estadoCard1 = Estado.error;
-          estadoCard2 = Estado.error;
-          errorMessage = 'Error al cargar datos de tareas: ${response.statusCode}';
-        });
-      }
+      final data = await ApiService.fetchTasksData();
+      setState(() {
+        tasksData = data;
+        estadoCard1 = Estado.exito;
+        estadoCard2 = Estado.exito;
+      });
     } catch (e) {
-      // Manejar error de conexión
       setState(() {
         estadoCard1 = Estado.error;
         estadoCard2 = Estado.error;
-        errorMessage = 'Error de conexión: $e';
+        errorMessage = e.toString();
       });
     }
   }
@@ -250,7 +225,7 @@ class _InitialviewsState extends State<Initialviews> {
       estadoCard2 = Estado.cargando;
     });
     
-    await Future.wait([fetchUserData(), fetchTasksData()]);
+    await Future.wait([_fetchUserData(), _fetchTasksData()]);
   }
 
   @override
@@ -261,7 +236,6 @@ class _InitialviewsState extends State<Initialviews> {
         appBar: AppBar(
           title: const Text('Trabajo'),
           backgroundColor: const Color.fromARGB(255, 238, 31, 31),
-          // Se eliminó el botón de actualizar del AppBar
         ),
         body: RefreshIndicator(
           onRefresh: refreshAllData,
