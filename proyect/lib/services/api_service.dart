@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +11,7 @@ class ApiService {
   // Obtener datos del usuario
   static Future<Map<String, dynamic>> fetchUserData() async {
     final response = await http.get(Uri.parse(userUrl));
-
+    
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -23,7 +22,7 @@ class ApiService {
   // Obtener datos de las tareas
   static Future<Map<String, dynamic>> fetchTasksData() async {
     final response = await http.get(Uri.parse(tasksUrl));
-
+    
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
